@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:aop="http://www.springframework.org/schema/aop"
+xsi:schemaLocation="http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+http://www.springframework.org/schema/aop 
+http://www.springframework.org/schema/aop/spring-aop-4.1.xsd">
+
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	    <property name="location">
+	       	<value>file:/project/baseApp/application.properties</value>
+	    </property>
+	</bean>
+    
+    <!-- start mail -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+         <property name="host" value="172.16.200.32"/>
+         <property name="port" value="25" />
+         <property name="username" value="alexander"/>
+         <property name="password" value="alexander"/>
+         <property name="javaMailProperties">
+		    <props>
+		        <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+                <prop key="mail.smtp.quitwait">false</prop>
+		    </props>
+    	</property>
+    </bean>
+
+	<bean id="mailMessage" class="org.springframework.mail.SimpleMailMessage">
+		<property name="from" value="test@gmail.com"/>
+	</bean>
+   
+	<bean id="saltGenerator" class="org.jasypt.salt.FixedStringSaltGenerator">
+		<property name="salt">
+			<value>***base***</value>
+		</property>
+	</bean>
+	
+	<bean id="digesterConfig" class="org.jasypt.digest.config.SimpleDigesterConfig">
+		<property name="algorithm">
+			<value>MD5</value>
+		</property>
+		<property name="iterations">
+			<value>1</value>
+		</property>
+		<property name="saltGenerator">
+			<ref bean="saltGenerator"/>
+		</property>
+		<property name="saltSizeBytes">
+			<value>20</value>
+		</property>
+	</bean>
+	
+	<bean id="jasyptDigester" class="org.jasypt.digest.StandardStringDigester">
+		<property name="config">
+			<ref bean="digesterConfig"/>
+		</property>
+	</bean>
+		
+	<bean id="encryptorConfig" class="org.jasypt.encryption.pbe.config.SimpleStringPBEConfig">
+		<property name="algorithm">
+			<value>PBEWithMD5AndDES</value>
+		</property>
+		<property name="stringOutputType">
+			<value>base64</value>
+		</property>
+		<property name="saltGenerator" ref="saltGenerator" />
+		<property name="password">
+			<value>theP@ssw0rd</value>
+		</property>
+	</bean>
+	
+	<bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+		<property name="config" ref="encryptorConfig" />
+	</bean>
+	
+</beans>

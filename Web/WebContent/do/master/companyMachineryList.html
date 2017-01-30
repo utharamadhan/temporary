@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>Machinery</title>
+</head>
+<style>
+.dataTables_scrollBody {
+	height : auto !important;
+	min-height : 120px;
+}
+</style>
+<body>
+<div id="content" class="col-md-12">
+	<div id="machinery-detail-container"></div>
+	<div id="machinery-list-container">
+	<div class="pageheader">
+		<h4><i class="fa fa-tachometer"></i> Settings / Mesin / List Mesin
+		<span></span></h4>
+	</div>
+	<div class="col-md-4 tile-body no-vpadding" style="margin:10px;">
+		<a href="#" id="machinery-btn-add" class="btn btn-primary" style="margin-bottom:5px"><i class="fa fa-plus dropdown-plus"></i> &nbsp; Tambah</a>
+	</div>
+	<div class="main">
+		<div class="row">
+			<div class="col-md-12">	
+				<section class="tile transparent">
+					<div class="table-responsive">
+						<div class="tile-body rounded-corners">
+	                      	<table id="machinery-list-table" class="table table-datatable table-custom">
+		                        <thead>
+		                          <tr>
+									<th>Nama</th>
+									<th>Model</th>
+									<th>Tipe</th>
+									<th>Kapasitas</th>
+									<th>Berat</th>
+									<th>Capacity UOM</th>
+									<th>E/D</th>
+		                          </tr>
+		                        </thead>
+	                     	</table>
+	                     	<div style="padding-bottom: 3px; bottom: 0;" th:replace="pagingDiv::pager (${pagingWrapper}, ${#dates.createNow()}, 'machinery-list-table', 'contentArea')">
+							</div>
+                     	</div>
+					</div>
+				</section>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+		function showAdd() {
+	    	var sURL = /*[[@{/do/settings/machinery/showAdd?skipdecorator=}]]*/ #;
+	    	showScreen('machinery-list-container', 'machinery-detail-container', sURL);
+		}
+		
+		function showDetail(maintenancePK) {
+			var sURL = /*[[@{/do/settings/machinery/showEdit?maintenancePK=}]]*/ #;
+			showScreen('machinery-list-container', 'machinery-detail-container', sURL + maintenancePK + "&skipdecorator=");
+		}
+		
+		function deleteItem(maintenancePK) {
+			var sURL = /*[[@{/do/settings/machinery/delete?}]]*/ #;
+			var serializedData = "maintenancePKs=" + maintenancePK;
+			$.post(sURL, serializedData,function(data){
+				if(data.errorList!=null){
+					//show error message
+				}else{
+					search();
+				}
+			});
+		} 
+		
+		function deleteMachinery() {
+			var sURL = /*[[@{/do/settings/machinery/deleteMachinery?skipDecorator}]]*/ #;
+			$.post(sURL, $('.machinery-list-check-delete').serialize(), function(data){
+				if(data.errorList!=null){
+					
+				}else{
+					location.reload(true);
+				}
+			});
+		}
+	
+	    $(function(){
+		    setMenuActive('setting');
+		    var colDefs = [{ name : "name" }, 
+	    	               { name : "model.name" },
+	    	               { name : "type.name" },
+	    	               { name : "capacity" },
+	    	               { name : "weighting.name" },
+	    	               { name : "capacityUOM.name" },
+	    	               { type : "deleteAndEdit" , param : [ "pkCompanyMachinery" ] }
+	    	               ];
+		    var sURL = /*[[@{/do/settings/machinery/list?}]]*/ #;
+		    buildDataTable(/*[[@{/}]]*/, sURL, 'machinery-list-table', 450, colDefs, null, null);
+	    });
+	    
+		$('#machinery-btn-add').click(function(){
+			showAdd();
+		});
+		
+		$('#machinery-btn-delete').click(function(){
+			deleteMachinery();
+		});
+		
+	/*]]>*/
+</script>
+</body>
+</html>

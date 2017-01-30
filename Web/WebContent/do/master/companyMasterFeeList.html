@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>Master Fee</title>
+</head>
+<style>
+.dataTables_scrollBody {
+	height : auto !important;
+	min-height : 120px;
+}
+</style>
+<body>
+<div id="content" class="col-md-12">
+	<div id="masterFee-detail-container"></div>
+	<div id="masterFee-list-container">
+	<div class="pageheader">
+		<h4><i class="fa fa-tachometer"></i> Settings / Biaya / List Biaya
+		<span></span></h4>
+	</div>
+	<div class="col-md-4 tile-body no-vpadding" style="margin:10px;">
+		<a href="#" id="masterFee-btn-add" class="btn btn-primary" style="margin-bottom:5px"><i class="fa fa-plus dropdown-plus"></i> &nbsp; Tambah</a>
+	</div>
+	<div class="main">
+		<div class="row">
+			<div class="col-md-12">	
+				<section class="tile transparent">
+					<div class="table-responsive">
+						<div class="tile-body rounded-corners">
+	                      	<table id="masterFee-list-table" class="table table-datatable table-custom">
+		                        <thead>
+		                          <tr>
+		                            <th>Jenis Biaya</th>
+									<th>Deskripsi</th>
+									<th>Biaya per Satuan</th>
+									<th>Satuan</th>
+									<th>E/D</th>
+		                          </tr>
+		                        </thead>
+	                     	</table>
+	                     	<div style="padding-bottom: 3px; bottom: 0;" th:replace="pagingDiv::pager (${pagingWrapper}, ${#dates.createNow()}, 'masterFee-list-table', 'contentArea')">
+							</div>
+                     	</div>
+					</div>
+				</section>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+		function showAdd() {
+	    	var sURL = /*[[@{/do/settings/fee/showAdd?skipdecorator=}]]*/ #;
+	    	showScreen('masterFee-list-container', 'masterFee-detail-container', sURL);
+		}
+		
+		function showDetail(maintenancePK) {
+			var sURL = /*[[@{/do/settings/fee/showEdit?maintenancePK=}]]*/ #;
+			showScreen('masterFee-list-container', 'masterFee-detail-container', sURL + maintenancePK + "&skipdecorator=");
+		}
+		
+		function deleteItem(maintenancePK) {
+			var sURL = /*[[@{/do/settings/fee/delete?}]]*/ #;
+			var serializedData = "maintenancePKs=" + maintenancePK;
+			$.post(sURL, serializedData,function(data){
+				if(data.errorList!=null){
+					//show error message
+				}else{
+					search();
+				}
+			});
+		} 
+		
+		function deleteMasterFee() {
+			var sURL = /*[[@{/do/settings/fee/deleteMasterFee?skipDecorator}]]*/ #;
+			$.post(sURL, $('.masterFee-list-check-delete').serialize(), function(data){
+				if(data.errorList!=null){
+					
+				}else{
+					location.reload(true);
+				}
+			});
+		}
+	
+	    $(function(){
+		    setMenuActive('setting');
+		    var colDefs = [{ name : "feeType.nameId" }, 
+	    	               { name : "descr" }, 
+	    	               { name : "unitFee" },
+	    	               { name : "uom.name" },
+	    	               { type : "deleteAndEdit" , param : [ "pkCompanyMasterFee" ] }
+	    	               ];
+		    var sURL = /*[[@{/do/settings/fee/list?}]]*/ #;
+		    buildDataTable(/*[[@{/}]]*/, sURL, 'masterFee-list-table', 450, colDefs, null, null);
+	    });
+	    
+		$('#masterFee-btn-add').click(function(){
+			showAdd();
+		});
+		
+		$('#masterFee-btn-delete').click(function(){
+			deleteMasterFee();
+		});
+		
+	/*]]>*/
+</script>
+</body>
+</html>

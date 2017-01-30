@@ -1,0 +1,94 @@
+<td style="padding-bottom: 3px; bottom: 0; position: absolute;" th:fragment="pager (wrapper, dateNow, tformId, container)" th:with="uniqueId=${#dates.format(dateNow,'ddMMyyyyHHmmssSSS')}">
+	<input type="button" id="btnPrev" value="&lt;" class="button" th:onclick="'window[\'gotoPage'+${uniqueId}+'\']('+${wrapper.currentPage}+',-1)'" th:if="${wrapper.currentPage &gt; 1}"></input>
+	<input type="hidden" th:id="_txtOldPage+${uniqueId}" th:value="${wrapper.currentPage}" ></input>
+	<input type="text" th:id="txtPage+${uniqueId}" name="page" size="4" th:value="${wrapper.currentPage}"></input> of <label id="noOfPage" th:text="${wrapper.noOfPage}">0</label> page(s) 
+	<input type="button" id="btnGo" value="GO" th:onclick="'window[\'refresh'+${uniqueId}+'\']()'" class= "button"></input>
+	<input type="button" id="btnNext" value="&gt;" class="button" th:onclick="'window[\'gotoPage'+${uniqueId}+'\']('+${wrapper.currentPage}+',+1)'" th:if="${wrapper.currentPage &lt; wrapper.noOfPage}"></input>
+	
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		var maxPage = {};
+       	var formReg = {};
+       	var title = /*[[#{message.title.information}]]*/;
+       	
+		function reSetMaxPage(mp,tid){
+			maxPage[formReg[tid]]=mp;
+		}
+		
+		window['gotoPage'+[[${uniqueId}]]] = function (current, offset) {
+			var id = [[${uniqueId}]];
+			var num = [[${wrapper.noOfPage}]];
+			var formId = [[${tformId}]];
+			var contentArea = [[${container}]];
+			maxPage[id] = num;
+			formReg[formId] = id;
+			txtPage = $("#txtPage"+id);
+			current = current + offset;
+			if (current > maxPage[id]) {
+				infoDialog("Maximum Page is "+maxPage[id]+".", null, null, title);
+				txtPage.val($("#_txtOldPage"+id).val());
+				return;
+			}
+			txtPage.val(current);
+			var sURL=$("#"+formId).attr("action")+ "?page="+ txtPage.val()+"&skipdecorator";
+			$("#"+formId).attr('action',sURL);
+			$.get($("#"+formId).attr('action'), $("#"+formId).serialize(), function(data){
+				 $("#"+contentArea).html(data);
+			});
+		}
+		
+		window['refresh'+[[${uniqueId}]]] = function () {
+			var id = [[${uniqueId}]];
+			var num = [[${wrapper.noOfPage}]];
+			var formId = [[${tformId}]];
+			var contentArea = [[${container}]];
+			maxPage[id] = num;
+			formReg[formId] = id;
+			var objPage = $("#txtPage"+id);
+			if(parseInt(objPage.val())>maxPage[id]){
+				infoDialog("Maximum Page is "+maxPage[id]+".", null, null, title);
+				objPage.val($("#_txtOldPage"+id).val());
+			}else{
+				var sURL=$("#"+formId).attr("action")+"?page="+objPage.val()+"&skipdecorator";
+				$("#"+formId).attr('action',sURL);
+				$.get($("#"+formId).attr('action'), $("#"+formId).serialize(), function(data){
+					 $("#"+contentArea).html(data);
+				});
+			}
+		}
+		
+		$('#txtPage'+[[${uniqueId}]]).autoNumeric();
+		$('#txtPage'+[[${uniqueId}]]).keypress(function(event) {
+	  	  if (event.which == '13') {
+	  	    event.preventDefault();
+			window['gotoPage'+[[${uniqueId}]]](parseInt($("#txtPage"+[[${uniqueId}]]).val()), 0);
+	  	  }
+	  	});
+		
+		function paging_getCurrentPage() {
+	  	  	return $("#_txtOldPage"+[[${uniqueId}]]).val();
+	  	}
+
+	  	function paging_resetPage(newPage) {
+		  	var value = newPage;
+		  	if (value == null) {
+			  	value = 1;
+		  	} 
+	  		$('input[name="page"]').val(value);
+	  		$("#_txtOldPage"+[[${uniqueId}]]).val(value);
+	  	}
+	  	
+	  	function refreshList(){
+			var formId = [[${tformId}]];
+			var contentArea = [[${container}]];
+	  		$("#"+contentArea).load($("#"+formId).attr("action")+"?skipdecorator");
+	  	}
+	  	
+	  	function search(){
+	  		window['refresh'+[[${uniqueId}]]]();
+	  	}
+	  	
+	  	$('.ui-dialog-content input[name=page]').parent().attr('style','padding-bottom: 3px; bottom: 0;');
+	  	/*]]>*/
+	</script>
+</td>

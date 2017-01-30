@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>User Registration</title>
+</head>
+<style>
+.parsley-error-list {
+	list-style-type: none;
+    padding: 0;
+    font-size: 11px;
+    font-style:italic;
+}
+</style>
+<body>
+<div id="wrap">
+      <!-- Make page fluid -->
+      <div class="row">
+        <!-- Page content -->
+        <div id="content" class="col-md-12 full-page login">
+        	<div class="col-md-6 col-md-offset-1 desc-block">
+        		<div class="row">
+        			<div class="col-md-7">
+        				<img th:src="@{/images/logo-hfc.png}" class="logo" style="width:100%"/>
+        			</div>
+        		</div>
+        	</div>
+        	<div class="col-md-4 height-100">
+	          <div class="inside-block">
+	            <h1><strong>Form</strong> Pendaftaran</h1>
+				<div id="errorFragmentList"></div>
+	            <form id="registration-detail-form" class="form-signin" action="index.php" th:object="${detail}">
+	              <section>
+	              	<div class="form-group">
+		              	<div class="form-input-container">              	
+			                <div class="input-group">
+			                  <input type="text" class="form-control" name="username" placeholder="Nama" th:field="*{party.name}"/>
+			                  <div class="input-group-addon"><i class="fa fa-user"></i></div>
+			                </div>
+		              	</div>
+	              	</div>
+	              	<div class="form-group">
+	              		<div class="form-input-container">              		
+		              		<div class="input-group">
+			                  	<input type="text" class="form-control" name="email" placeholder="Email" th:field="*{email}"/>
+			                  	<div class="input-group-addon"><i class="fa fa-envelope"></i></div>
+		    	            </div>
+	              		</div>
+	              	</div>
+	              	<div class="form-group">
+	              		<div class="form-input-container">  
+	                		<div class="input-group">
+	                  			<input type="text" class="form-control" placeholder="Phone" th:field="*{party.partyContacts[0].contact}"/>
+	                  			<div class="input-group-addon"><i class="fa fa-phone"></i></div>
+	                		</div>
+	                	</div>
+	                </div>
+	                <div class="form-group">
+	              		<div class="form-input-container">
+			                <div class="input-group">
+			                  <input type="password" class="form-control" placeholder="Password" th:field="*{password}"/>
+			                  <div class="input-group-addon"><i class="fa fa-key"></i></div>
+			                </div>
+	                	</div>
+	                </div>
+	                <div class="form-group">
+	              		<div class="form-input-container">
+			                <div class="input-group">
+			                  <input type="password" class="form-control" name="password" placeholder="Konfirmasi Password" th:field="*{passwordConfirmation}"/>
+			                  <div class="input-group-addon"><i class="fa fa-key"></i></div>
+			                </div>
+	                	</div>
+	                </div>
+	              </section>
+	              <section class="controls">
+	                <div class="checkbox check-transparent">
+	                  <input id="agreement-check" type="checkbox" value="1"/>
+	                  <label id="agreement-check-label" for="agreement-check">Saya setuju dengan syarat dan peraturan yang berlaku</label>
+	                </div>
+	              </section>
+	              <section class="register">
+	                <button id="registration-detail-btn-save" class="btn btn-primary">Daftar</button>
+	              </section>
+	            </form>
+	          </div>
+	        </div>
+        </div>
+        <!-- /Page content -->  
+      </div>
+    </div>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+	    $(function(){
+	    	
+	    	var backToLogin = function(data) {
+	    		showNotificationSuccess("Form Registrasi Sukses Disubmit, Silahkan Aktivasi Akun Melalui Email Anda",1);
+	    		setTimeout(function(){ window.location = data.loginPage; }, 3000);
+	    	}
+	    	
+			var submitForm = function(){
+				cleanErrorParsley();
+				var sURL = /*[[@{/do/registration/submit}]]*/ #;
+				$.post(sURL, $("#registration-detail-form").serialize(), function(data) {
+					if(data.errorList!=null){
+						displayErrorParsley(data.errorList);
+					}else{
+						backToLogin(data);
+					}
+				});
+			};
+			
+			var showAgreementMandatory = function(){
+				$('#agreement-check-label').css('color', 'red');
+			}
+			
+			var clearAgreementMandatory = function(){
+				$('#agreement-check-label').css('color', '');
+			}
+			
+			var agreementChecked = function(){
+				return $('#agreement-check').attr('checked');
+			}
+			
+			$('#registration-detail-btn-save').click(function(e){
+				e.preventDefault();
+				if(agreementChecked()){
+					submitForm();
+				}else{
+					showAgreementMandatory();
+				}
+			});
+			
+			$('#agreement-check').click(function(e){
+				if(agreementChecked()){
+					$('#agreement-check').removeAttr('checked');
+				}else{
+					$('#agreement-check').attr('checked', true);	
+				}
+				clearAgreementMandatory();
+			});
+	    });
+	/*]]>*/
+</script>
+</body>
+</html>

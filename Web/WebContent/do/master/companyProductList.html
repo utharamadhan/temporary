@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>Product</title>
+</head>
+<style>
+.dataTables_scrollBody {
+	height : auto !important;
+	min-height : 120px;
+}
+</style>
+<body>
+<div id="content" class="col-md-12">
+	<div id="product-detail-container"></div>
+	<div id="product-list-container">
+	<div class="pageheader">
+		<h4><i class="fa fa-tachometer"></i> Settings / Item / List Item
+		<span></span></h4>
+	</div>
+	<div class="col-md-4 tile-body no-vpadding" style="margin:10px;">
+		<a href="#" id="product-btn-add" class="btn btn-primary" style="margin-bottom:5px"><i class="fa fa-plus dropdown-plus"></i> &nbsp; Tambah</a>
+	</div>
+	<div class="main">
+		<div class="row">
+			<div class="col-md-12">	
+				<div id="errorFragmentList"></div>
+				<section class="tile transparent">
+					<div class="table-responsive">
+						<div class="tile-body rounded-corners">
+	                      	<table id="product-list-table" class="table table-datatable table-custom">
+		                        <thead>
+		                          <tr>
+									<th>Jenis Item</th>
+									<th>Nama</th>
+									<th>Satuan</th>
+									<th>E/D</th>
+		                          </tr>
+		                        </thead>
+	                     	</table>
+	                     	<div style="padding-bottom: 3px; bottom: 0;" th:replace="pagingDiv::pager (${pagingWrapper}, ${#dates.createNow()}, 'product-list-table', 'contentArea')">
+							</div>
+                     	</div>
+					</div>
+				</section>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+		function showAdd() {
+	    	var sURL = /*[[@{/do/settings/product/showAdd?skipdecorator=}]]*/ #;
+	    	showScreen('product-list-container', 'product-detail-container', sURL);
+		}
+		
+		function showDetail(maintenancePK) {
+			var sURL = /*[[@{/do/settings/product/showEdit?maintenancePK=}]]*/ #;
+			showScreen('product-list-container', 'product-detail-container', sURL + maintenancePK + "&skipdecorator=");
+		}
+		
+		function deleteItem(maintenancePK) {
+			cleanErrorParsley();
+			var sURL = /*[[@{/do/settings/product/deleteProduct?}]]*/ #;
+			var serializedData = "maintenancePKs=" + maintenancePK;
+			$.post(sURL, serializedData,function(data){
+				if(data.errorList!=null){
+					displayErrorParsley(data.errorList);
+				}else{
+					search();
+				}
+			});
+		} 
+		
+		function deleteProduct() {
+			cleanErrorParsley();
+			var sURL = /*[[@{/do/settings/product/deleteProduct?skipDecorator}]]*/ #;
+			$.post(sURL, $('.product-list-check-delete').serialize(), function(data){
+				if(data.errorList!=null){
+					displayErrorParsley(data.errorList);
+				}else{
+					location.reload(true);
+				}
+			});
+		}
+	
+	    $(function(){
+		    setMenuActive('setting');
+		    var colDefs = [{ name : "type.nameId" },
+	    	               { name : "name" }, 
+	    	               { name : "uom.nameId" },
+	    	               { type : "deleteAndEdit" , param : [ "pkCompanyProduct" ] }];
+		    var sURL = /*[[@{/do/settings/product/list?}]]*/ #;
+		    buildDataTable(/*[[@{/}]]*/, sURL, 'product-list-table', 450, colDefs, null, null);
+	    });
+	    
+		$('#product-btn-add').click(function(){
+			showAdd();
+		});
+		
+		$('#product-btn-delete').click(function(){
+			deleteProduct();
+		});
+		
+	/*]]>*/
+</script>
+</body>
+</html>

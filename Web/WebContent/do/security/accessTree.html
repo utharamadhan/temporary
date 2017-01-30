@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+<TITLE>User Role Access List</TITLE>
+</HEAD>
+<body>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+		$(function(){
+			var contextPath = /*[[@{/}]]*/;
+			$("#tree").fancytree({
+				title: "Access List",
+				checkbox: true,
+				selectMode: 3,
+				idPrefix: "",
+				clickFolderMode: 3,
+				debugLevel: 0,
+				autoCollapse: false,
+				imagePath: /*[[@{/theme/skin-vista/}]]*/,
+				classNames: {
+			        container: "fancytree-container",
+			        node: "fancytree-node",
+			        folder: "fancytree-folder",
+					
+			        empty: "fancytree-empty",
+			        vline: "fancytree-vline",
+			        expander: "fancytree-expander",
+			        connector: "fancytree-connector",
+			        checkbox: "fancytree-checkbox",
+			        nodeIcon: "fancytree-icon",
+			        title: "fancytree-title",
+			        noConnector: "fancytree-no-connector",
+	
+			        nodeError: "fancytree-statusnode-error",
+			        nodeWait: "fancytree-statusnode-wait",
+			        hidden: "fancytree-hidden",
+			        combinedExpanderPrefix: "fancytree-exp-",
+			        combinedIconPrefix: "fancytree-ico-",
+			        hasChildren: "fancytree-has-children",
+			        active: "fancytree-active",
+			        selected: "fancytree-selected",
+			        expanded: "fancytree-expanded",
+			        lazy: "fancytree-lazy",
+			        focused: "fancytree-focused",
+			        partsel: "fancytree-partsel",
+			        lastsib: "fancytree-lastsib"
+			   
+			    }
+			});
+	
+			var rootNode = $("#tree").fancytree("getRootNode");
+			var tree = $("#tree").fancytree("getTree");
+			var accessNodes = /*[[${accessNodes}]]*/;
+			buildAccessListTrees(accessNodes, rootNode, tree);
+			$("#tree").fancytree("disable");
+		});
+		
+		function buildAccessListTrees(accessNodes, rootNode, tree){
+			for (var i = 0; i < accessNodes.length; i++) {
+			    var counter = accessNodes[i];
+			    if(counter.parentPK == "0"){
+			    	rootNode.addChildren({
+			    		title: counter.name,
+			    		tooltip: counter.name,
+			    		isFolder: true,
+			    		selected: counter.checked,
+			    		key: counter.childPK,
+			    		icon: 'base.gif'
+			    	});
+			    }else{
+			    	var parentNode = tree.getNodeByKey(counter.parentPK+"");
+			    	parentNode.addChildren({
+			    		title: counter.name,
+			    		tooltip: counter.name,
+			    		isFolder: false,
+			    		selected: counter.checked,
+			    		key: counter.childPK
+			    	});
+			    	parentNode.folder = true;
+			    }
+			}
+		}
+		
+		function save(){
+			var tree = $("#tree").fancytree("getTree");
+			var selectedNodes = tree.getSelectedNodes();
+		    var selectedKeys = $.map(selectedNodes, function(node){
+		        return node.key;
+		    });
+		    $("#tree").fancytree("getTree").visit(function(node){
+			    if(node.partsel && node.hasChildren()) {
+			    	if(!selectedNodes.inArray(node)){
+						selectedKeys += "," + node.key;	
+					}
+			    }
+			});
+		    $("#accessibilities").val(selectedKeys);
+		    $("#saveButton").attr('disabled', 'disabled');
+		    
+		    $.post($("#accessDetail").attr('action'), $("#accessDetail").serialize(), function(data){
+		    	alert("Aksesibilitas sukses tersimpan!");
+				closeDialog();
+			});
+		}
+		
+		function expandAccess(){
+			$("#tree").fancytree("getRootNode").visit(function(node){
+		    	node.setExpanded(true);
+			});
+			return false;
+		}
+		
+		function collapseAccess(){
+			$("#tree").fancytree("getRootNode").visit(function(node){
+		    	node.setExpanded(false);
+			});
+			return false;
+		}
+		
+		function closeAccessList() {
+			closeDialog();
+		}
+	/*]]>*/
+	</script>
+<form th:action="@{/do/accessibility/save?skipdecorator}" id="accessDetail">
+	<table style="width:90%; height:90%; border-spacing: 0;">
+	<tr>
+		<td valign="top" height="10%">
+		<table style="border-spacing: 0;">
+			<tr>
+				<!-- <td class="toolBarImageButton"
+						onmouseover="this.className='toolBarImageHover'"
+						onmouseout="this.className='toolBarImageButton'" onclick="save()"
+						nowrap="nowrap"><IMG th:alt="#{button.simpan}"
+						th:src="@{/images/save24.gif}"
+						class="absMiddle"/> <label th:text="#{button.simpan}"></label></td> -->
+				<td class="toolBarImageButton"
+					onmouseover="this.className='toolBarImageHover'"
+					onmouseout="this.className='toolBarImageButton'"
+					onclick="closeDialog()" nowrap="nowrap"><IMG th:alt="#{button.batal}"
+					th:src="@{/images/close24.gif}"
+					style="vertical-align: middle; margin-bottom: .25em"/> <label th:text="#{button.batal}"></label></td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+	<tr>
+		<td valign="top" height="90%"><!-- BEGIN OF TREE -->
+		
+		<INPUT type="hidden" name="pkAppRole" th:value="${pkAppRole}"/>
+		<INPUT type="hidden" name="accessibilities" id="accessibilities"
+			value=""/>
+			
+		<div id="dtree" class="dtree" style="OVERFLOW: auto; WIDTH:515px; HEIGHT:332px;">
+		<table style="width: 100%; height: 100%;">
+			<tr>
+				<td valign="top">
+				<p>&nbsp;<a style="cursor: pointer" id="lnkExpand" onclick="expandAccess();">Expand</a> | <a style="cursor: pointer" id="lnkCollapse" onclick="collapseAccess();">Collapse</a></p>
+					<div id="tree">
+						<ul></ul>
+					</div>
+				</td>
+			</tr>
+		</table>
+		</div>
+
+		</td>
+	</tr>
+	</table>
+</form>
+</body>
+</html>

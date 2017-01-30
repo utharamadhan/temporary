@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>Lookup</title>
+</head>
+<body>
+<div class="widget-header">
+	<h3><i class="fa fa-shopping-basket"></i> Administration / Lookup Group List / Lookup List</h3>
+</div>
+<div class="main">
+<div class="widget-content">
+	<table id="lookup-list-table" class="table table-striped table-bordered">
+		<thead>
+			<tr>
+				<th>Code</th>
+				<th>Name</th>	
+				<th>Description</th>
+				<th>E/D</th>
+			</tr>
+		</thead>
+	</table>
+	<div style="padding-bottom: 3px; bottom: 0;" th:replace="pagingDiv::pager (${pagingWrapper}, ${#dates.createNow()}, 'lookup-list-table', 'contentArea')">
+	</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+		function showAdd() {
+	    	var sURL = /*[[@{/do/lookup/showAdd?skipdecorator=}]]*/ #;
+	    	showScreen('lookup-list-container', 'lookup-detail-container', sURL);
+		}
+		
+		function showDetail(maintenancePK) {
+			var sURL = /*[[@{/do/lookup/showEdit?maintenancePK=}]]*/ #;
+			showScreen('lookup-list-container', 'lookup-detail-container', sURL + maintenancePK + "&skipdecorator=");
+		}
+		
+		function deleteItem(maintenancePK) {
+			var sURL = /*[[@{/do/lookup/delete?}]]*/ #;
+			var serializedData = "maintenancePKs=" + maintenancePK;
+			$.post(sURL, serializedData,function(data){
+				if(data.errorList!=null){
+					//show error message
+				}else{
+					search();
+				}
+			});
+		} 
+		
+		function deleteLookup() {
+			var sURL = /*[[@{/do/lookup/deleteLookup?skipDecorator}]]*/ #;
+			$.post(sURL, $('.lookup-list-check-delete').serialize(), function(data){
+				if(data.errorList!=null){
+					
+				}else{
+					location.reload(true);
+				}
+			});
+		}
+	
+	    $(function(){
+	    	setMenuActive('lookup');
+	    	var lookupGroup = /*[[${lookupGroup}]]*/ #;
+		    var colDefs = [{ name : "code" }, 
+	    	               { name : "name" },
+	    	               { name : "descr" },
+	    	               { type : "deleteAndEdit" , param : [ "pkLookup" ] }
+	    	               ];
+		    var sURL = /*[[@{/do/lookup/list?lookupGroup=}]]*/ #;
+		    buildDataTable(/*[[@{/}]]*/, sURL+lookupGroup+"&", 'lookup-list-table', 450, colDefs, null, null);
+	    });
+	    
+		$('#lookup-btn-add').click(function(){
+			showAdd();
+		});
+		
+		$('#lookup-btn-delete').click(function(){
+			deleteLookup();
+		});
+		
+	/*]]>*/
+</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>User Registration</title>
+</head>
+<style>
+.parsley-error-list {
+	list-style-type: none;
+    padding: 0;
+    font-size: 11px;
+    font-style:italic;
+}
+</style>
+<body>
+<div id="wrap">
+      <!-- Make page fluid -->
+      <div class="row">
+        <!-- Page content -->
+        <div id="content" class="col-md-12 full-page login">
+
+          <div class="inside-block">
+            <img th:src="@{/images/logo-hfc.png}" class="logo" style="width:100%"/>
+            <h1><strong>Form</strong> Aktivasi</h1>
+			<div id="errorFragmentList"></div>
+            <form id="registration-detail-form" class="form-signin" action="index.php" th:object="${detail}">
+              <section>
+              	<div class="form-group">
+	              	<div class="form-input-container">              	
+		                <div class="input-group">
+		                  <input type="text" class="form-control" placeholder="Phone" th:field="*{userName}"/>
+		                  <div class="input-group-addon"><i class="fa fa-phone"></i></div>
+		                </div>
+	              	</div>
+              	</div>
+              	<div class="form-group">
+              		<div class="form-input-container">              		
+	              		<div class="input-group">
+		                  	<input type="text" class="form-control" name="email" placeholder="Activation Kode" th:field="*{activationCode}"/>
+		                  	<div class="input-group-addon"><i class="fa fa-envelope"></i></div>
+	    	            </div>
+              		</div>
+              	</div>
+              </section>
+              <section class="register">
+                <button id="registration-detail-btn-save" class="btn btn-primary">Aktifkan</button>
+              </section>
+            </form>
+          </div>
+
+
+        </div>
+        <!-- /Page content -->  
+      </div>
+    </div>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+	    $(function(){
+	    	
+	    	var backToLogin = function(data) {
+	    		showNotificationSuccess("Aktifasi berhasil, halaman akan dikembalikan ke Login",1);
+	    		setTimeout(function(){ window.location = data.loginPage; }, 3000);
+	    	}
+	    	
+			var submitForm = function(){
+				cleanErrorParsley();
+				var sURL = /*[[@{/do/registration/activationSubmit}]]*/ #;
+				$.post(sURL, $("#registration-detail-form").serialize(), function(data) {
+					if(data.errorList!=null){
+						displayErrorParsley(data.errorList);
+					}else{
+						backToLogin(data);
+					}
+				});
+			};
+			
+			$('#registration-detail-btn-save').click(function(e){
+				e.preventDefault();
+				submitForm();
+			});
+			
+	    });
+	/*]]>*/
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>System Parameter Detail</title>
+</head>
+<body>
+	<div class="widget-header">
+		<h3><i class="fa fa-shopping-basket"></i> Administration / System Parameter List / Add New System Parameter </h3>
+	</div>
+	<div id="systemParameter-content" class="widget-content">
+		<div class="span4 tile-body no-vpadding" style="margin:10px;">
+			<a href="#" id="systemParameter-detail-btn-edit" class="btn btn-primary btn-edit" style="margin-bottom:5px">
+				<i class="icon-edit"></i> &nbsp; Edit
+			</a>
+			<a href="#" id="systemParameter-detail-btn-back" class="btn btn-default btn-back" style="margin-bottom:5px">
+				<i class="icon-arrow-left"></i> &nbsp; Back
+			</a>
+			<a href="#" id="systemParameter-detail-btn-save" class="btn btn-primary btn-save" style="margin-bottom:5px;display:none;">
+				<i class="icon-save"></i> &nbsp; Save
+			</a>
+			<a href="#" id="systemParameter-detail-btn-cancel" class="btn btn-default btn-cancel" style="margin-bottom:5px;display:none;">
+				<i class="icon-remove"></i> &nbsp; Cancel
+			</a>
+		</div>
+		<div>
+			<form action="#" id="systemParameter-detail-form" class="form-horizontal" method="POST" novalidate="novalidate" th:object="${detail}">
+				<div class="stockTypeStyle form-horizontal">
+					<div class="control-group">
+						<div class="span12">
+							<div id="errorFragmentList">
+								<th:block th:if="${message}">
+									<div class='alert alert-success'>
+										<a href='#' class='close' data-dismiss='alert' aria-label='close' title='close'>&#10006;</a>			
+										<label th:text="${message}"></label>
+									</div>
+								</th:block>
+							</div>
+						</div>
+					</div>
+					<input id="systemParameter-detail-maintenancePk" type="hidden" th:field="*{pkAppParameter}"/>
+					<div class="control-group">
+						<label class="control-label" th:text="'Nama'">Name</label>
+						<div class="controls">
+							<input type="text" class="span6 form-control input-text" placeholder="Name" name="srch-term" id="input-text-name" th:field="*{name}" disabled="disabled"/>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" th:text="'Description'">Description</label>
+						<div class="controls">
+							<input type="text" class="span6 form-control input-text" placeholder="Description" name="srch-term" id="input-text-name" th:field="*{descr}" disabled="disabled"/>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">Data Type</label>
+                     	<div class="controls">
+                     		<input type="text" th:value="*{dataTypeDescr}" class="span6 form-contract label-select" disabled="disabled"/>
+                       		<select class="span6 form-control input-select" th:field="*{datatype}" style="display:none;">
+                       			<option th:each="opt : ${dataTypeOptions}" th:value="${opt.code}" th:text="${opt.descr}"></option>
+                       		</select>
+                      	</div>
+                    </div>
+					<div class="control-group">
+						<label class="control-label" th:text="'Value'">Value</label>
+						<div class="controls">
+							<input type="text" class="span6 form-control input-text" placeholder="Description" name="srch-term" id="input-text-name" th:field="*{value}" disabled="disabled"/>
+						</div>
+					</div>
+					</div>
+				</form>
+				</div>
+	</div>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	    $(function(){
+			var backToList = function(){
+				returnToList('systemParameter-detail-container', 'systemParameter-list-container', true);
+			};
+	    	
+			var submitForm = function(){
+				cleanErrorParsley();
+				var sURL = /*[[@{/do/systemParameter/saveSystemParameter/}]]*/ #;
+				$.post(sURL, $("#systemParameter-detail-form").serialize(), function(data) {
+					if(data.errorList!=null){
+						displayErrorParsley(data.errorList);
+					}else{
+						backToList();
+					}
+				});
+			};
+			
+			var activateForm = function(isActivate) {
+				if (isActivate) {
+					$('.label-select').hide();
+					$('.input-select').show();
+					$('.input-text').prop('disabled', false);
+					showSaveBtn('systemParameter-content');
+				}
+			}
+			
+			var cancelForm = function(result) {
+				if(result && $('#systemParameter-detail-maintenancePk').val()) {
+					showDetail($('#systemParameter-detail-maintenancePk').val());	
+				} else if (result) {
+					backToList();
+				}
+			}
+			
+			$('#systemParameter-detail-btn-edit').click(function(e){
+				e.preventDefault();
+				activateForm(true);
+			});
+			
+			$('#systemParameter-detail-btn-save').click(function(e){
+				e.preventDefault();
+				submitForm();
+			});
+			
+			$('#systemParameter-detail-btn-back').click(function(e){
+				e.preventDefault();
+				backToList();
+			});
+			
+			$('#systemParameter-detail-btn-cancel').click(function(e){
+				e.preventDefault();
+				bootBoxConfirmation('Any unsaved changes will be lost', cancelForm);
+			});
+			
+			if(!$('#systemParameter-detail-maintenancePk').val()) {
+	    		activateForm(true);
+	    	}
+	    });
+	/*]]>*/
+	</script>
+</body>
+</html>

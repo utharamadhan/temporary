@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1" />
+<title>System Tree</title>
+</head>
+<body>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	$(function(){
+			var contextPath = /*[[@{/}]]*/;
+			
+			$("#systemTree").fancytree({
+				click: function(event, data) {
+					var node = data.node;
+					if(node.data.url != null && node.data.url != ""){
+						$("#contentArea").load(contextPath + node.data.url);
+					}
+				},
+			title: "System Tree",
+			checkbox: false,
+			selectMode: 3,
+			idPrefix: "",
+			clickFolderMode: 3,
+			debugLevel: 0,
+			autoCollapse: false,
+			imagePath: /*[[@{/theme/skin-vista/}]]*/,
+			classNames: {
+		        container: "fancytree-container",
+		        node: "fancytree-node",
+		        folder: "fancytree-folder",
+				
+		        empty: "fancytree-empty",
+		        vline: "fancytree-vline",
+		        expander: "fancytree-expander",
+		        connector: "fancytree-connector",
+		        checkbox: "fancytree-checkbox",
+		        nodeIcon: "fancytree-icon",
+		        title: "fancytree-title",
+		        noConnector: "fancytree-no-connector",
+	
+		        nodeError: "fancytree-statusnode-error",
+		        nodeWait: "fancytree-statusnode-wait",
+		        hidden: "fancytree-hidden",
+		        combinedExpanderPrefix: "fancytree-exp-",
+		        combinedIconPrefix: "fancytree-ico-",
+		        hasChildren: "fancytree-has-children",
+		        active: "fancytree-active",
+		        selected: "fancytree-selected",
+		        expanded: "fancytree-expanded",
+		        lazy: "fancytree-lazy",
+		        focused: "fancytree-focused",
+		        partsel: "fancytree-partsel",
+		        lastsib: "fancytree-lastsib"
+		   
+		    }
+		});
+
+		var rootNode = $("#systemTree").fancytree("getRootNode");
+		var parentNode;
+		var tree = $("#systemTree").fancytree("getTree");
+		var menuTrees = /*[[${systemAdminTrees}]]*/;
+		buildMenuTrees(menuTrees, rootNode, tree);
+		
+	});
+	
+	function expand(){
+		$("#systemTree").fancytree("getRootNode").visit(function(node){
+	    	node.setExpanded(true);
+		});
+		return false;
+	}
+	
+	function collapse(){
+		$("#systemTree").fancytree("getRootNode").visit(function(node){
+	    	node.setExpanded(false);
+		});
+		return false;
+	}
+	
+/*]]>*/
+</script>
+	<table style="width:100%; border-spacing: 0; padding: 0px;">
+		<tr>
+			<td width="20%" valign="top" style="height:100%;border-spacing: 0;padding: 0px">
+				<p>
+					&nbsp;<a style="cursor: pointer" id="lnkExpand" onclick="expand();">Expand</a>
+					| <a style="cursor: pointer" id="lnkCollapse" onclick="collapse();">Collapse</a>
+				</p>
+				<div id="systemTree">
+					<ul></ul>
+				</div>
+			</td>
+			<td valign="top" style="height:100%;border-spacing: 0;padding: 0px">
+				<div id="contentArea" style="height:100%;padding: 0px"></div>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

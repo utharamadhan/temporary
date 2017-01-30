@@ -1,0 +1,122 @@
+<div class="page-sidebar col-md-3" th:fragment="menuStock"> 
+	<div class="nav-collapse collapse navbar-collapse page-siderbar-collapse">
+		<ul class="nav nav-sidebar navbar-nav margin-bottom-35">
+			<li id="produksi">
+				<a href="/Web/do/stock/produksi/showList">
+					<i class="icon-basket "></i>
+					Produksi
+				</a>
+			</li>
+			<li id="nonproduksi">
+				<a href="/Web/do/stock/nonproduksi/showList">
+					<i class="icon-basket"></i>
+					Non Produksi
+				</a>
+			</li>
+		</ul>
+	</div>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+	    	setMenuActive('stock');
+	    /*]]>*/
+	</script>
+</div>
+<div class="page-sidebar col-md-3" th:fragment="menuMitra"> 
+	<div class="nav-collapse collapse navbar-collapse page-siderbar-collapse">
+		<ul class="nav nav-sidebar navbar-nav margin-bottom-35">
+			<li id="penjual">
+				<a href="/Web/do/mitra/penjual/showList">
+					<i class="icon-basket "></i>
+					Pemasok
+				</a>
+			</li>
+			<li id="producer">
+				<a href="/Web/do/mitra/producer/showList">
+					<i class="icon-basket "></i>
+					Pihak Ketiga
+				</a>
+			</li>
+			<li id="pembeli">
+				<a href="/Web/do/mitra/pembeli/showList">
+					<i class="icon-basket "></i>
+					Pedagang
+				</a>
+			</li>
+		</ul>
+	</div>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+	    	setMenuActive('mitra');
+	    /*]]>*/
+	</script>
+</div>
+<div class="page-sidebar col-md-3" th:fragment="menuReport"> 
+	<div class="nav-collapse collapse navbar-collapse page-siderbar-collapse">
+		<ul class="nav nav-sidebar navbar-nav margin-bottom-35">
+			<li id="reportstock">
+				<a href="/Web/do/reports/stock/showList">
+					<i class="icon-basket"></i>
+					Stock
+				</a>
+			</li>
+			<li id="reportjualbeli">
+				<a href="/Web/do/reports/analisajualbeli/showList">
+					<i class="icon-basket "></i>
+					Jual Beli
+				</a>
+			</li>
+		</ul>
+	</div>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+	    	setMenuActive('reports');
+	    /*]]>*/
+	</script>
+</div>
+<div class="page-sidebar col-md-3" th:fragment="menuSetting"> 
+	<div class="nav-collapse collapse navbar-collapse page-siderbar-collapse">
+		<ul class="nav nav-sidebar navbar-nav margin-bottom-35">
+			<li id="profil">
+				<a href="/Web/do/setting/profile">
+					<i class="icon-basket "></i>
+					Profil
+				</a>
+			</li>
+			<li id="jenisstock">
+				<a href="/Web/do/setting/jenisstock/showList">
+					<i class="icon-basket"></i>
+					Jenis Stock
+				</a>
+			</li>
+			<li id="alurproses">
+				<a href="/Web/do/setting/alurproses/showList">
+					<i class="icon-basket"></i>
+					Alur Proses Produksi
+				</a>
+			</li>
+			<li id="metodeproduksi">
+				<a href="/Web/do/setting/metodeproduksi/showList">
+					<i class="icon-basket"></i>
+					Metode Produksi
+				</a>
+			</li>
+			<li>
+				<a href="setting-metode-pengolahan.html">
+					<i class="icon-basket"></i>
+					Lokasi Stock
+				</a>
+			</li>
+			<li>
+				<a href="setting-total-baris-tabel.html">
+					<i class="icon-basket"></i>
+					Sistem Parameter
+				</a>
+			</li>
+		</ul>
+	</div>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+	    	setMenuActive('setting');
+	    /*]]>*/
+	</script>
+</div>

@@ -1,0 +1,1 @@
+<%@page import="id.base.app.SystemConstant"%><%out.print(SystemConstant.AJAX_SUCCESS); %>

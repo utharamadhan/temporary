@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>Lookup</title>
+</head>
+<body>
+	<div class="pageheader">
+		<div class="row col-md-8">
+			<h4><i class="fa fa-tachometer"></i> Settings / Referensi / Tambah Referensi
+			<span></span></h4>
+		</div>
+	</div>
+	<div class="row col-md-8">
+	<section class="tile color transparent-black">
+			<div class="tile-body">
+				<form action="#" id="companyLookup-detail-form" class="form-horizontal" method="POST" novalidate="novalidate" th:object="${detail}">
+					<div class="stockTypeStyle">
+						<div class="form-group">
+							<div class="col-md-12">
+								<div id="errorFragmentList">
+									<th:block th:if="${message}">
+										<div class='alert alert-success'>
+											<a href='#' class='close' data-dismiss='alert' aria-label='close' title='close'>&#10006;</a>			
+											<label th:text="${message}"></label>
+										</div>
+									</th:block>
+								</div>
+							</div>									
+							&nbsp;
+						</div>
+						<input id="companyLookup-detail-maintenancePk" type="hidden" th:field="*{pkCompanyLookup}"/>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" th:text="'Referensi Group'">Referensi Group</label>
+							<div class="col-sm-9 form-input-container">
+								<select class="chosen-select chosen-transparent form-control" th:field="*{lookupGroupString}">
+									<option th:each="opt : ${optionsLookupGroup}" th:value="${opt.name}" th:text="${opt.name}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" th:text="'Nama (Indonesia)'">Nama (Indonesia)</label>
+							<div class="col-sm-9 form-input-container">
+								<input type="text" class="form-control" placeholder="Nama (Indonesia)" name="srch-term" id="input-text-name" th:field="*{nameId}"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" th:text="'Nama (English)'">Nama (English)</label>
+							<div class="col-sm-9 form-input-container">
+								<input type="text" class="form-control" placeholder="Nama (English)" name="srch-term" id="input-text-name" th:field="*{nameEn}"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" th:text="'No.Urutan'">No.Urutan</label>
+							<div class="col-sm-9 form-input-container">
+								<input type="text" class="form-control" placeholder="Nomor Urutan" name="srch-term" id="input-text-name" th:field="*{orderNo}"/>
+							</div>
+						</div>
+						<div class="form-group form-footer">				
+							<div class="col-sm-offset-3 col-sm-9">
+								<a href="#" id="companyLookup-detail-btn-cancel" class="btn btn-default" type="reset" data-toggle="tooltip" title="" data-original-title="Kembali ke list setting gudang">Batal</a>
+								<button id="companyLookup-detail-btn-save" class="btn btn-primary" type="submit" data-toggle="tooltip" title="" data-original-title="Menyimpan data">Simpan</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+	</section>
+	</div>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	    $(function(){
+			var backToList = function(){
+				returnToList('companyLookup-detail-container', 'companyLookup-list-container', true);
+			};
+	    	
+			var submitForm = function(){
+				cleanErrorParsley();
+				var sURL = /*[[@{/do/settings/lookup/saveCompanyLookup/}]]*/ #;
+				$.post(sURL, $("#companyLookup-detail-form").serialize(), function(data) {
+					if(data.errorList!=null){
+						displayErrorParsley(data.errorList);
+					}else{
+						backToList();
+					}
+				});
+			};
+			
+			$('#companyLookup-detail-btn-save').click(function(e){
+				e.preventDefault();
+				submitForm();
+			});
+			
+			$('#companyLookup-detail-btn-cancel').click(function(e){
+				e.preventDefault();
+				backToList();
+			});
+	    });
+	/*]]>*/
+	</script>
+</body>
+</html>

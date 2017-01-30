@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>Lookup Detail</title>
+</head>
+<body>
+	<div class="pageheader">
+		<div class="row col-md-8">
+			<h4><i class="fa fa-tachometer"></i> Administration / Lookup Group List / Edit Lookup
+			<span></span></h4>
+		</div>
+	</div>
+	<div class="row col-md-8">
+	<section class="tile color transparent-black">
+			<div class="tile-body">
+				<form action="#" id="lookup-detail-form" class="form-horizontal" method="POST" novalidate="novalidate" th:object="${detail}">
+					<div class="stockTypeStyle">
+						<div class="form-group">
+							<div class="col-md-12">
+								<div id="errorFragmentList">
+									<th:block th:if="${message}">
+										<div class='alert alert-success'>
+											<a href='#' class='close' data-dismiss='alert' aria-label='close' title='close'>&#10006;</a>			
+											<label th:text="${message}"></label>
+										</div>
+									</th:block>
+								</div>
+							</div>									
+							&nbsp;
+						</div>
+						<input id="lookup-detail-maintenancePk" type="hidden" th:field="*{pkLookup}"/>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" th:text="'Order No'">Order No</label>
+							<div class="col-sm-9 form-input-container">
+								<input type="text" class="form-control" placeholder="Order No" name="srch-term" id="input-text-orderNo" th:field="*{orderNo}"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" th:text="'Code'">Code</label>
+							<div class="col-sm-9 form-input-container">
+								<input type="text" class="form-control" placeholder="Code" name="srch-term" id="input-text-name" th:field="*{code}"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" th:text="'Nama'">Name</label>
+							<div class="col-sm-9 form-input-container">
+								<input type="text" class="form-control" placeholder="Name" name="srch-term" id="input-text-name" th:field="*{name}"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" th:text="'Description'">Description</label>
+							<div class="col-sm-9 form-input-container">
+								<input type="text" class="form-control" placeholder="Description" name="srch-term" id="input-text-name" th:field="*{descr}"/>
+							</div>
+						</div>
+						<div class="form-group form-footer">				
+							<div class="col-sm-offset-3 col-sm-9">
+								<a href="#" id="lookup-detail-btn-cancel" class="btn btn-default" type="reset" data-toggle="tooltip" title="">Batal</a>
+								<button id="lookup-detail-btn-save" class="btn btn-primary" type="submit" data-toggle="tooltip" title="">Simpan</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+	</section>
+	</div>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	    $(function(){
+			var backToList = function(){
+				returnToList('lookup-detail-container', 'lookup-list-container', true);
+			};
+	    	
+			var submitForm = function(){
+				cleanErrorParsley();
+				var sURL = /*[[@{/do/lookup/saveLookup/}]]*/ #;
+				$.post(sURL, $("#lookup-detail-form").serialize(), function(data) {
+					if(data.errorList!=null){
+						displayErrorParsley(data.errorList);
+					}else{
+						backToList();
+					}
+				});
+			};
+			
+			$('#lookup-detail-btn-save').click(function(e){
+				e.preventDefault();
+				submitForm();
+			});
+			
+			$('#lookup-detail-btn-cancel').click(function(e){
+				e.preventDefault();
+				backToList();
+			});
+	    });
+	/*]]>*/
+	</script>
+</body>
+</html>

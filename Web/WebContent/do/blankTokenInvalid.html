@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>Token Invalid</title>
+</head>
+<body>
+<div align="center">
+	<table style="width: 100%; border: 0px; border-spacing: 0; border-collapse: separate;">
+		<tr>
+			<td valign="top" align="center"><img th:src="@{/images/CompanyLogo.png}" width="119px" height="57px"/></td>
+		</tr>
+		<tr>
+			<td align="center"><a class="menulink2" th:href="${T(id.base.app.SystemConstant).LOGIN_URL}" th:text="#{error.token.invalid}"></a></td>
+		</tr>
+	</table>
+</div>
+</body>
+</html>

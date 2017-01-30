@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>App Role Detail</title>
+</head>
+<body>
+	<div class="widget-header">
+		<h3><i class="fa fa-shopping-basket"></i> Administration / App Role List / Add New App Role<span></span></h3>
+	</div>
+	<div id="appRoleMaintenance-content" class="widget-content">
+		<div class="span4 tile-body no-vpadding" style="margin:10px;">
+			<a href="#" id="appRole-detail-btn-edit" class="btn btn-primary btn-edit" style="margin-bottom:5px">
+				<i class="icon-edit"></i> &nbsp; Edit
+			</a>
+			<a href="#" id="appRole-detail-btn-back" class="btn btn-default btn-back" style="margin-bottom:5px">
+				<i class="icon-arrow-left"></i> &nbsp; Back
+			</a>
+			<a href="#" id="appRole-detail-btn-save" class="btn btn-primary btn-save" style="margin-bottom:5px;display:none;">
+				<i class="icon-save"></i> &nbsp; Save
+			</a>
+			<a href="#" id="appRole-detail-btn-cancel" class="btn btn-default btn-cancel" style="margin-bottom:5px;display:none;">
+				<i class="icon-remove"></i> &nbsp; Cancel
+			</a>
+		</div>
+		<div>
+			<form action="#" id="appRole-detail-form" class="form-horizontal" method="POST" novalidate="novalidate" th:object="${detail}">
+				<div class="stockTypeStyle form-horizontal">
+					<div class="control-group">
+						<div class="span12">
+							<div id="errorFragmentList">
+								<th:block th:if="${message}">
+									<div class='alert alert-success'>
+										<a href='#' class='close' data-dismiss='alert' aria-label='close' title='close'>&#10006;</a>			
+										<label th:text="${message}"></label>
+									</div>
+								</th:block>
+							</div>
+						</div>
+					</div>
+					<input id="appRole-detail-maintenancePk" type="hidden" th:field="*{pkAppRole}"/>
+					<div class="control-group">
+						<label class="control-label" th:text="'Code'">Code</label>
+						<div class="controls">
+							<input type="text" class="span6 form-control input-text" placeholder="Code" name="srch-term" id="input-text-code" th:field="*{code}" disabled="disabled"/>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" th:text="'Name'">Name</label>
+						<div class="controls">
+							<input type="text" class="span6 form-control input-text" placeholder="Name" name="srch-term" id="input-text-name" th:field="*{name}" disabled="disabled"/>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	    $(function(){
+			var backToList = function(){
+				returnToList('appRoleMaintenance-detail-container', 'appRoleMaintenance-list-container', true);
+			};
+	    	
+			var submitForm = function(){
+				cleanErrorParsley();
+				var sURL = /*[[@{/do/appRole/saveappRole/}]]*/ #;
+				$.post(sURL, $("#appRole-detail-form").serialize(), function(data) {
+					if(data.errorList!=null){
+						displayErrorParsley(data.errorList);
+					}else{
+						backToList();
+					}
+				});
+			};
+			
+			var activateForm = function(isActivate) {
+				if (isActivate) {
+					$('.input-text').prop('disabled', false);
+					showSaveBtn('appRoleMaintenance-content');
+				}
+			}
+			
+			var cancelForm = function(result) {
+				if(result && $('#appRole-detail-maintenancePk').val()) {
+					showDetail($('#appRole-detail-maintenancePk').val());	
+				} else if (result) {
+					backToList();
+				}
+			}
+			
+			$('#appRole-detail-btn-edit').click(function(e){
+				e.preventDefault();
+				activateForm(true);
+			});
+			
+			$('#appRole-detail-btn-save').click(function(e){
+				e.preventDefault();
+				submitForm();
+			});
+			
+			$('#appRole-detail-btn-back').click(function(e){
+				e.preventDefault();
+				backToList();
+			});
+			
+			$('#appRole-detail-btn-cancel').click(function(e){
+				e.preventDefault();
+				bootBoxConfirmation('Any unsaved changes will be lost', cancelForm);
+			});
+			
+	    });
+	/*]]>*/
+	</script>
+</body>
+</html>

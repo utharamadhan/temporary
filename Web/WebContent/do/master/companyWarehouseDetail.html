@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>Warehouse</title>
+</head>
+<body>
+	<div class="pageheader">
+		<div class="row col-md-8">
+			<h4><i class="fa fa-tachometer"></i> Settings / Gudang / Tambah Gudang
+			<span></span></h4>
+		</div>
+	</div>
+	<div class="row col-md-8">
+	<section class="tile color transparent-black">
+			<div class="tile-body">
+				<form action="#" id="warehouse-detail-form" class="form-horizontal" method="POST" novalidate="novalidate" th:object="${detail}">
+					<div class="stockTypeStyle">
+						<div class="form-group">
+							<div class="col-md-12">
+								<div id="errorFragmentList">
+									<th:block th:if="${message}">
+										<div class='alert alert-success'>
+											<a href='#' class='close' data-dismiss='alert' aria-label='close' title='close'>&#10006;</a>			
+											<label th:text="${message}"></label>
+										</div>
+									</th:block>
+								</div>
+							</div>									
+							&nbsp;
+						</div>
+						<input id="warehouse-detail-maintenancePk" type="hidden" th:field="*{pkCompanyWarehouse}"/>
+						<div class="form-group">
+							<label for="input07" class="col-sm-3 control-label">Tipe</label>
+							<div class="col-sm-9 form-input-container">
+								<select id='warehouse-detail-select-uom' class="chosen-select chosen-transparent form-control" th:field="*{type.pkLookup}">
+									<option value="">[ Pilih Tipe ]</option>
+									<option th:each="opt : ${typeList}" th:value="${opt.pkLookup}" th:text="${opt.name}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" th:text="'Nama'">Nama</label>
+							<div class="col-sm-9 form-input-container">
+								<input type="text" class="form-control" placeholder="Nama" name="srch-term" id="input-text-name" th:field="*{name}"/>
+							</div>
+						</div>
+						<div class="form-group form-footer">				
+							<div class="col-sm-offset-3 col-sm-9">
+								<a href="#" id="warehouse-detail-btn-cancel" class="btn btn-default" type="reset" data-toggle="tooltip" title="" data-original-title="Kembali ke list setting gudang">Batal</a>
+								<button id="warehouse-detail-btn-save" class="btn btn-primary" type="submit" data-toggle="tooltip" title="" data-original-title="Menyimpan data">Simpan</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+	</section>
+	</div>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	    $(function(){
+			var backToList = function(){
+				returnToList('warehouse-detail-container', 'warehouse-list-container', true);
+			};
+	    	
+			var submitForm = function(){
+				cleanErrorParsley();
+				var sURL = /*[[@{/do/settings/warehouse/saveWarehouse/}]]*/ #;
+				$.post(sURL, $("#warehouse-detail-form").serialize(), function(data) {
+					if(data.errorList!=null){
+						displayErrorParsley(data.errorList);
+					}else{
+						backToList();
+					}
+				});
+			};
+			
+			$('#warehouse-detail-btn-save').click(function(e){
+				e.preventDefault();
+				submitForm();
+			});
+			
+			$('#warehouse-detail-btn-cancel').click(function(e){
+				e.preventDefault();
+				backToList();
+			});
+	    });
+	/*]]>*/
+	</script>
+</body>
+</html>

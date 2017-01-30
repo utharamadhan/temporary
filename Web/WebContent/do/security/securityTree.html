@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1" />
+<title>Security Tree</title>
+</head>
+<body>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	$(function(){
+			var contextPath = /*[[@{/}]]*/;
+			
+			$("#securityTree").fancytree({
+				click: function(event, data) {
+					var node = data.node;
+					if(node.data.url != null && node.data.url != ""){
+						$("#contentArea").load(contextPath + node.data.url);
+					}
+				},
+			title: "Security Tree",
+			checkbox: false,
+			selectMode: 3,
+			idPrefix: "",
+			clickFolderMode: 3,
+			debugLevel: 0,
+			autoCollapse: false,
+			imagePath: /*[[@{/theme/skin-vista/}]]*/,
+			classNames: {
+		        container: "fancytree-container",
+		        node: "fancytree-node",
+		        folder: "fancytree-folder",
+				
+		        empty: "fancytree-empty",
+		        vline: "fancytree-vline",
+		        expander: "fancytree-expander",
+		        connector: "fancytree-connector",
+		        checkbox: "fancytree-checkbox",
+		        nodeIcon: "fancytree-icon",
+		        title: "fancytree-title",
+		        noConnector: "fancytree-no-connector",
+	
+		        nodeError: "fancytree-statusnode-error",
+		        nodeWait: "fancytree-statusnode-wait",
+		        hidden: "fancytree-hidden",
+		        combinedExpanderPrefix: "fancytree-exp-",
+		        combinedIconPrefix: "fancytree-ico-",
+		        hasChildren: "fancytree-has-children",
+		        active: "fancytree-active",
+		        selected: "fancytree-selected",
+		        expanded: "fancytree-expanded",
+		        lazy: "fancytree-lazy",
+		        focused: "fancytree-focused",
+		        partsel: "fancytree-partsel",
+		        lastsib: "fancytree-lastsib"
+		   
+		    }
+		});
+
+		var rootNode = $("#securityTree").fancytree("getRootNode");
+		var parentNode;
+		var tree = $("#securityTree").fancytree("getTree");
+		var securityAdminTrees = /*[[${securityAdminTrees}]]*/;
+		buildSecAdminTrees(securityAdminTrees, rootNode, tree);
+		
+	});
+	
+	function expand(){
+		$("#securityTree").fancytree("getRootNode").visit(function(node){
+	    	node.setExpanded(true);
+		});
+		return false;
+	}
+	
+	function collapse(){
+		$("#securityTree").fancytree("getRootNode").visit(function(node){
+	    	node.setExpanded(false);
+		});
+		return false;
+	}
+	
+	function buildSecAdminTrees(securityAdminTrees, rootNode, tree){
+		for (var i = 0; i < securityAdminTrees.length; i++) {
+		    var counter = securityAdminTrees[i];
+		    if(counter.parentValue == "-1"){
+		    	rootNode.addChildren({
+		    		title: counter.name,
+		    		tooltip: counter.name,
+		    		isFolder: true,
+		    		url: counter.path + '&skipDecorator',
+		    		key: counter.value,
+		    		icon: 'base.gif'
+		    	});
+		    }else{
+		    	var parentNode = tree.getNodeByKey(counter.parentValue);
+		    	parentNode.addChildren({
+		    		title: counter.name,
+		    		tooltip: counter.name,
+		    		isFolder: false,
+		    		url: counter.path + '&skipDecorator',
+		    		key: counter.value
+		    	});
+		    	parentNode.folder = true;
+		    }
+		}
+	}
+	
+/*]]>*/
+</script>
+	<table style="width:100%; border-spacing: 0; padding: 0px;">
+		<tr>
+			<td width="20%" valign="top" style="height:100%;border-spacing: 0;padding: 0px">
+				<p>
+					&nbsp;<a style="cursor: pointer" id="lnkExpand" onclick="expand();">Expand</a>
+					| <a style="cursor: pointer" id="lnkCollapse" onclick="collapse();">Collapse</a>
+				</p>
+				<div id="securityTree">
+					<ul></ul>
+				</div>
+			</td>
+			<td valign="top" style="height:100%;border-spacing: 0;padding: 0px">
+				<div id="contentArea" style="height:100%;padding: 0px"></div>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

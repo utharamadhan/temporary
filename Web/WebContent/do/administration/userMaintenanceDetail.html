@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>User Maintenance Detail</title>
+</head>
+<body>
+	<div class="widget-header">
+		<h3><i class="fa fa-shopping-basket"></i> Administration / User Maintenance List / Add New User Maintenance<span></span></h3>
+	</div>
+	<div id="userMaintenance-content" class="widget-content">
+		<div class="span4 tile-body no-vpadding" style="margin:10px;">
+			<a href="#" id="userMaintenance-detail-btn-edit" class="btn btn-primary btn-edit" style="margin-bottom:5px">
+				<i class="icon-edit"></i> &nbsp; Edit
+			</a>
+			<a href="#" id="userMaintenance-detail-btn-back" class="btn btn-default btn-back" style="margin-bottom:5px">
+				<i class="icon-arrow-left"></i> &nbsp; Back
+			</a>
+			<a href="#" id="userMaintenance-detail-btn-save" class="btn btn-primary btn-save" style="margin-bottom:5px;display:none;">
+				<i class="icon-save"></i> &nbsp; Save
+			</a>
+			<a href="#" id="userMaintenance-detail-btn-cancel" class="btn btn-default btn-cancel" style="margin-bottom:5px;display:none;">
+				<i class="icon-remove"></i> &nbsp; Cancel
+			</a>
+		</div>
+		<div>
+			<form action="#" id="userMaintenance-detail-form" class="form-horizontal" method="POST" novalidate="novalidate" th:object="${detail}">
+				<div class="stockTypeStyle form-horizontal">
+					<div class="control-group">
+						<div class="span12">
+							<div id="errorFragmentList">
+								<th:block th:if="${message}">
+									<div class='alert alert-success'>
+										<a href='#' class='close' data-dismiss='alert' aria-label='close' title='close'>&#10006;</a>			
+										<label th:text="${message}"></label>
+									</div>
+								</th:block>
+							</div>
+						</div>
+					</div>
+					<input id="userMaintenance-detail-maintenancePk" type="hidden" th:field="*{pkAppUser}"/>
+					<div class="control-group">
+						<label class="control-label" th:text="'Username'">Username</label>
+						<div class="controls">
+							<input type="text" class="span6 form-control input-text" placeholder="Username" name="srch-term" id="input-text-name" th:field="*{userName}" disabled="disabled"/>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" th:text="'Email'">Email</label>
+						<div class="controls">
+							<input type="text" class="span6 form-control input-text" placeholder="Email" name="srch-term" id="input-text-name" th:field="*{email}" disabled="disabled"/>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	    $(function(){
+			var backToList = function(){
+				returnToList('userMaintenance-detail-container', 'userMaintenance-list-container', true);
+			};
+	    	
+			var submitForm = function(){
+				cleanErrorParsley();
+				var sURL = /*[[@{/do/userMaintenance/saveUserMaintenance/}]]*/ #;
+				$.post(sURL, $("#userMaintenance-detail-form").serialize(), function(data) {
+					if(data.errorList!=null){
+						displayErrorParsley(data.errorList);
+					}else{
+						backToList();
+					}
+				});
+			};
+			
+			var activateForm = function(isActivate) {
+				if (isActivate) {
+					$('.input-text').prop('disabled', false);
+					showSaveBtn('userMaintenance-content');
+				}
+			}
+			
+			var cancelForm = function(result) {
+				if(result && $('#userMaintenance-detail-maintenancePk').val()) {
+					showDetail($('#userMaintenance-detail-maintenancePk').val());	
+				} else if (result) {
+					backToList();
+				}
+			}
+			
+			$('#userMaintenance-detail-btn-edit').click(function(e){
+				e.preventDefault();
+				activateForm(true);
+			});
+			
+			$('#userMaintenance-detail-btn-save').click(function(e){
+				e.preventDefault();
+				submitForm();
+			});
+			
+			$('#userMaintenance-detail-btn-back').click(function(e){
+				e.preventDefault();
+				backToList();
+			});
+			
+			$('#userMaintenance-detail-btn-cancel').click(function(e){
+				e.preventDefault();
+				bootBoxConfirmation('Any unsaved changes will be lost', cancelForm);
+			});
+			
+
+	    	if(!$('#userMaintenance-detail-maintenancePk').val()) {
+	    		activateForm(true);
+	    	}
+	    });
+	/*]]>*/
+	</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>Insert title here</title>
+</head>
+<body>
+<table class="tb1">
+		<tr>
+			<td width="100%" align="left"  valign="top">
+				<table class="tb2" >
+					<tr>
+					<td  
+					valign="top" 
+					class="menulink"
+					onmouseover="this.style.color='red'" 
+					onmouseout="this.style.color='blue'"  
+					height="20">
+					 <a th:href="${T(id.base.app.SystemConstant).LOGIN_URL}">&nbsp;Log Out</a>
+					</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td align="center">User not found. Please contact Administrator.</td>
+		</tr>
+	</table>
+</body>
+</html>

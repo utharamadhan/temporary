@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>User Maintenance</title>
+</head>
+<style>
+.dataTables_scrollBody {
+	height : auto !important;
+	min-height : 120px;
+}
+</style>
+<body>
+<div class="span12">
+<div id="content" class="widget">
+	<div id="userMaintenance-detail-container"></div>
+	<div id="userMaintenance-list-container">
+	<div class="widget-header">
+		<h3><i class="fa fa-shopping-basket"></i> Administration / User Maintenance List<span></span></h3>
+	</div>
+	<div class="widget-content">
+	<div class="span4 tile-body no-vpadding" style="margin:10px;">
+		<a href="#" id="userMaintenance-btn-add" class="btn btn-primary" style="margin-bottom:5px"><i class="icon-plus"></i> &nbsp; Add</a>
+	</div>
+		<table id="userMaintenance-list-table" class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>User Name</th>
+					<th>Email</th>
+					<th>E/D</th>
+				</tr>
+			</thead>
+		</table>
+	<div style="padding-bottom: 3px; bottom: 0;" th:replace="pagingDiv::pager (${pagingWrapper}, ${#dates.createNow()}, 'userMaintenance-list-table', 'contentArea')">
+	</div>
+	</div>
+	</div>
+</div>
+</div>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+		function showAdd() {
+	    	var sURL = /*[[@{/do/userMaintenance/showAdd?skipdecorator=}]]*/ #;
+	    	showScreen('userMaintenance-list-container', 'userMaintenance-detail-container', sURL);
+		}
+		
+		function showDetail(maintenancePK) {
+			var sURL = /*[[@{/do/userMaintenance/showEdit?maintenancePK=}]]*/ #;
+			showScreen('userMaintenance-list-container', 'userMaintenance-detail-container', sURL + maintenancePK + "&skipdecorator=");
+		}
+		
+		function deleteItem(maintenancePK) {
+			var sURL = /*[[@{/do/userMaintenance/delete?}]]*/ #;
+			var serializedData = "maintenancePKs=" + maintenancePK;
+			$.post(sURL, serializedData,function(data){
+				if(data.errorList!=null){
+					//show error message
+				}else{
+					search();
+				}
+			});
+		} 
+		
+		function deleteUserMaintenance() {
+			var sURL = /*[[@{/do/userMaintenance/deleteUserMaintenance?skipDecorator}]]*/ #;
+			$.post(sURL, $('.userMaintenance-list-check-delete').serialize(), function(data){
+				if(data.errorList!=null){
+					
+				}else{
+					location.reload(true);
+				}
+			});
+		}
+	
+	    $(function(){
+	    	setMenuActive('Administrator');
+		    var colDefs = [{ name : "userName" }, 
+	    	               { name : "email" },
+	    	               { type : "edit" , param : [ "pkAppUser" ] }
+	    	               ];
+		    var sURL = /*[[@{/do/userMaintenance/list?}]]*/ #;
+		    buildDataTable(/*[[@{/}]]*/, sURL, 'userMaintenance-list-table', 450, colDefs, null, null);
+	    });
+	    
+		$('#userMaintenance-btn-add').click(function(){
+			showAdd();
+		});
+		
+		$('#userMaintenance-btn-delete').click(function(){
+			deleteUserMaintenance();
+		});
+		
+	/*]]>*/
+</script>
+</body>
+</html>

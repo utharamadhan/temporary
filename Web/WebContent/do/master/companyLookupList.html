@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>Referensi</title>
+</head>
+<style>
+.dataTables_scrollBody {
+	height : auto !important;
+	min-height : 120px;
+}
+</style>
+<body>
+<div id="content" class="col-md-12">
+	<div id="companyLookup-detail-container"></div>
+	<div id="companyLookup-list-container">
+	<div class="pageheader">
+		<h4><i class="fa fa-tachometer"></i> Settings / Referensi / List Referensi
+		<span></span></h4>
+	</div>
+	<div class="col-md-4 tile-body no-vpadding" style="margin:10px;">
+		<a href="#" id="companyLookup-btn-add" class="btn btn-primary" style="margin-bottom:5px"><i class="fa fa-plus dropdown-plus"></i> &nbsp; Tambah</a>
+	</div>
+	<div class="main">
+		<div class="row">
+			<div class="col-md-12">	
+				<section class="tile transparent">
+					<div class="table-responsive">
+						<div class="tile-body rounded-corners">
+	                      	<table id="companyLookup-list-table" class="table table-datatable table-custom">
+		                        <thead>
+		                          <tr>
+		                            <th>Referensi Group</th>
+									<th>Nama (Indonesia)</th>
+									<th>Nama (English)</th>
+									<th>No.Urutan</th>
+									<th>E/D</th>
+		                          </tr>
+		                        </thead>
+	                     	</table>
+	                     	<div style="padding-bottom: 3px; bottom: 0;" th:replace="pagingDiv::pager (${pagingWrapper}, ${#dates.createNow()}, 'companyLookup-list-table', 'contentArea')">
+							</div>
+                     	</div>
+					</div>
+				</section>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+		function showAdd() {
+	    	var sURL = /*[[@{/do/settings/lookup/showAdd?skipdecorator=}]]*/ #;
+	    	showScreen('companyLookup-list-container', 'companyLookup-detail-container', sURL);
+		}
+		
+		function showDetail(maintenancePK) {
+			var sURL = /*[[@{/do/settings/lookup/showEdit?maintenancePK=}]]*/ #;
+			showScreen('companyLookup-list-container', 'companyLookup-detail-container', sURL + maintenancePK + "&skipdecorator=");
+		}
+		
+		function deleteItem(maintenancePK) {
+			var sURL = /*[[@{/do/settings/lookup/delete?}]]*/ #;
+			var serializedData = "maintenancePKs=" + maintenancePK;
+			$.post(sURL, serializedData,function(data){
+				if(data.errorList!=null){
+					//show error message
+				}else{
+					search();
+				}
+			});
+		} 
+		
+		function deleteCompanyLookup() {
+			var sURL = /*[[@{/do/settings/lookup/deleteCompanyLookup?skipDecorator}]]*/ #;
+			$.post(sURL, $('.companyLookup-list-check-delete').serialize(), function(data){
+				if(data.errorList!=null){
+					
+				}else{
+					location.reload(true);
+				}
+			});
+		}
+	
+	    $(function(){
+		    setMenuActive('setting');
+		    var colDefs = [{ name : "lookupGroupString" },
+	    	               { name : "nameId" },
+	    	               { name : "nameEn" },
+	    	               { name : "orderNo" },
+	    	               { type : "deleteAndEdit" , param : [ "pkCompanyLookup" ] }
+	    	               ];
+		    var sURL = /*[[@{/do/settings/lookup/list?}]]*/ #;
+		    buildDataTable(/*[[@{/}]]*/, sURL, 'companyLookup-list-table', 450, colDefs, null, null);
+	    });
+	    
+		$('#companyLookup-btn-add').click(function(){
+			showAdd();
+		});
+		
+		$('#companyLookup-btn-delete').click(function(){
+			deleteCompanyLookup();
+		});
+		
+	/*]]>*/
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>Pihak Ketiga</title>
+</head>
+<style>
+.dataTables_scrollBody {
+	height : auto !important;
+	min-height : 120px;
+}
+</style>
+<body>
+<div id="content" class="col-md-12">
+	<div id="thirdParty-detail-container"></div>
+	<div id="thirdParty-list-container">
+	<div class="pageheader">
+		<h4><i class="fa fa-tachometer"></i> Settings / Pihak Ketiga
+		<span><i class="fa fa-question-circle help" aria-hidden="true"></i></span></h4>
+	</div>
+	<div class="col-md-4 tile-body no-vpadding" style="margin:10px;">
+		<a href="#" id="thirdParty-btn-add" class="btn btn-primary" style="margin-bottom:5px"><i class="fa fa-plus dropdown-plus"></i> &nbsp; Tambah</a>
+	</div>
+	<div class="main">
+		<div class="row">
+			<div class="col-md-12">	
+				<section class="tile transparent">
+					<div class="table-responsive">
+						<div class="tile-body rounded-corners">
+	                      	<table id="thirdParty-list-table" class="table table-datatable table-custom">
+		                        <thead>
+		                          <tr>
+		                            <th>Role</th>
+									<th>Nama</th>
+									<th>Provinsi</th>
+									<th>Kota</th>
+									<th>Kecamatan</th>
+									<th>Kelurahan</th>
+		                          	<th>E/D</th>
+		                          </tr>
+		                        </thead>
+	                     	</table>
+	                     	<div style="padding-bottom: 3px; bottom: 0;" th:replace="pagingDiv::pager (${pagingWrapper}, ${#dates.createNow()}, 'thirdParty-list-table', 'contentArea')">
+							</div>
+                     	</div>
+					</div>
+				</section>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+		function showAdd() {
+	    	var sURL = /*[[@{/do/settings/thirdParty/showAdd?skipdecorator=}]]*/ #;
+	    	showScreen('thirdParty-list-container', 'thirdParty-detail-container', sURL);
+		}
+		
+		function showDetail(maintenancePK) {
+			var sURL = /*[[@{/do/settings/thirdParty/showEdit?maintenancePK=}]]*/ #;
+			showScreen('thirdParty-list-container', 'thirdParty-detail-container', sURL + maintenancePK + "&skipdecorator=");
+		}
+		
+		function deleteItem(maintenancePK) {
+			var sURL = /*[[@{/do/settings/thirdParty/delete?}]]*/ #;
+			var serializedData = "maintenancePKs=" + maintenancePK;
+			$.post(sURL, serializedData,function(data){
+				if(data.errorList!=null){
+					//show error message
+				}else{
+					search();
+				}
+			});
+		} 
+		
+		function deleteProduct() {
+			var sURL = /*[[@{/do/settings/thirdParty/deleteThirdParty?skipDecorator}]]*/ #;
+			$.post(sURL, $('.thirdParty-list-check-delete').serialize(), function(data){
+				if(data.errorList!=null){
+					
+				}else{
+					location.reload(true);
+				}
+			});
+		}
+		
+	    $(function(){
+		    setMenuActive('setting');
+		    var colDefs = [{ name : "roleDescription" },
+		                   { name : "name" },
+		                   { name : "provinsi" },
+	    	               { name : "kabupatenKota" },
+	    	               { name : "kecamatan" },
+	    	               { name : "kelurahan" },
+	    	               { type : "deleteAndEdit" , param : [ "pkParty" ] }
+	    	               ];
+		    var sURL = /*[[@{/do/settings/thirdParty/list?}]]*/ #;
+		    buildDataTable(/*[[@{/}]]*/, sURL, 'thirdParty-list-table', 450, colDefs, null, null);
+	    });
+	    
+		$('#thirdParty-btn-add').click(function(e){
+			e.preventDefault();
+			showAdd();
+		});
+		
+		$('#thirdParty-btn-delete').click(function(){
+			deleteProduct();
+		});
+		
+	/*]]>*/
+</script>
+</body>
+</html>

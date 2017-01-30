@@ -1,0 +1,85 @@
+<div class="pull-right span2" style="padding-left:10px;padding-bottom: 10px; bottom: 0;" th:fragment="pager (wrapper, dateNow, tformId, container)">	
+	<input type="button" id="btnPrev" value="&lt;" class="btn btn-primary span1" th:onclick="'window[\'gotoPage'+${tformId}+'\'](-1)'" style="display: none;"></input>
+	<input type="hidden" th:id="_txtOldPage_+${tformId}" th:value="${wrapper?.currentPage}" ></input>
+	<input type="text" th:id="txtPage_+${tformId}" name="page" size="4" th:value="${wrapper?.currentPage}" style="width: 20px;"></input> of <label id="noOfPage" th:text="${wrapper?.noOfPage}" style="display:inline-block;">0</label> page(s) 
+	<input type="button" id="btnGo" value="GO" class= "btn btn-primary" th:onclick="'window[\'refresh'+${tformId}+'\']()'"></input>
+	<input type="button" id="btnNext" value="&gt;" class="btn btn-primary" th:onclick="'window[\'gotoPage'+${tformId}+'\'](+1)'" style="display: none;"></input>
+	
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		var maxPage = {};
+       	var formReg = {};
+       	var title = /*[[#{message.title.information}]]*/;
+       	
+		function reSetMaxPage(mp,tid){
+			maxPage[formReg[tid]]=mp;
+		}
+		
+		window['gotoPage'+[[${tformId}]]] = function (offset) {
+			var id = [[${tformId}]];
+			var num = parseInt($("#noOfPage").html());
+			var formId = [[${tformId}]];
+			var contentArea = [[${container}]];
+			maxPage[id] = num;
+			formReg[formId] = id;
+			txtPage = $("#txtPage_"+id);
+			var current = parseInt($("#_txtOldPage_"+id).val());
+			current = current + offset;
+			if (current > maxPage[id]) {
+				infoDialog("Maximum Page is "+maxPage[id]+".", null, null, title);
+				txtPage.val($("#_txtOldPage_"+id).val());
+				return;
+			}
+			txtPage.val(current);
+			reloadDataTableSearch(formId);
+		}
+		
+		window['refresh'+[[${tformId}]]] = function () {
+			var id = [[${tformId}]];
+			var num = parseInt($("#noOfPage").html());
+			var formId = [[${tformId}]];
+			var contentArea = [[${container}]];
+			maxPage[id] = num;
+			formReg[formId] = id;
+			var objPage = $("#txtPage_"+id);
+			if(parseInt(objPage.val())>maxPage[id]){
+				infoDialog("Maximum Page is "+maxPage[id]+".", null, null, title);
+				objPage.val($("#_txtOldPage_"+id).val());
+			}else{
+				reloadDataTableSearch(formId);
+			}
+		}
+		
+		$('#txtPage_'+[[${tformId}]]).autoNumeric('init', {aSep:'.', aDec:',', vMin: '-9999999999.99', vMax:'9999999999.99'});
+		$('#txtPage_'+[[${tformId}]]).keypress(function(event) {
+	  	  if (event.which == '13') {
+	  	    event.preventDefault();
+			window['refresh'+[[${tformId}]]]();
+	  	  }
+	  	});
+		
+		function paging_getCurrentPage() {
+	  	  	return $("#_txtOldPage_"+[[${tformId}]]).val();
+	  	}
+
+	  	function paging_resetPage(newPage) {
+		  	var value = newPage;
+		  	if (value == null) {
+			  	value = 1;
+		  	} 
+	  		$('input[name="page"]').val(value);
+	  		$("#_txtOldPage_"+[[${tformId}]]).val(value);
+	  	}
+	  	
+	  	function refreshList(){
+			var formId = [[${tformId}]];
+			var contentArea = [[${container}]];
+	  		$("#"+contentArea).load($("#"+formId).attr("action")+"?skipdecorator");
+	  	}
+	  	
+	  	function search(){
+	  		window['refresh'+[[${tformId}]]]();
+	  	}
+	  	/*]]>*/
+	</script>
+</div>

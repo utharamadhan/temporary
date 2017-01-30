@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:ifs="http://base.id">
+<head>
+<meta charset="ISO-8859-1"/>
+<title>Profile</title>
+</head>
+<body>
+	<div class="pageheader">
+		<div class="row col-md-8">
+			<h4><i class="fa fa-tachometer"></i> Settings / Pengangkut / Tambah Pengangkut
+			<span></span></h4>
+		</div>
+	</div>
+	<div class="row col-md-8" id="content-form">
+	<section class="tile color transparent-black">
+				<div class="tile-body">
+					<form action="#" id="transporter-detail-form" class="form-horizontal" method="POST" novalidate="novalidate" th:object="${detail}">
+						<div class="stockTypeStyle">
+							<div class="form-group">
+								<div class="col-md-12">
+									<div id="errorFragmentList">
+										<th:block th:if="${message}">
+											<div class='alert alert-success'>
+												<a href='#' class='close' data-dismiss='alert' aria-label='close' title='close'>&#10006;</a>			
+												<label th:text="${message}"></label>
+											</div>
+										</th:block>
+									</div>
+								</div>									
+								&nbsp;
+							</div>
+							<input id="transporter-detail-maintenancePk" type="hidden" th:field="*{pkParty}"/>
+							<div class="form-group">
+								<label class="col-sm-3 control-label" th:text="'Nama'">Nama</label>
+								<div class="col-sm-9 form-input-container">
+									<input type="text" class="form-control" placeholder="Nama" name="srch-term" id="input-text-name" th:field="*{name}"/>
+								</div>
+							</div>
+							
+							<!-- POPULATE PARTY ADDRESS IF EDIT MODE -->
+						
+							<th:block th:if="*{not #lists.isEmpty(partyAddresses)}">
+							<div th:each="address : *{partyAddresses}" class="address-section">
+								<div class="form-group">
+									<label for="input07" class="col-sm-3 control-label">Provinsi</label>
+									<div class="col-sm-9 form-input-container">
+										<select class="chosen-select chosen-transparent form-control detail-province" th:value="${address.provinsi.pkLookupAddress}">
+											<option th:each="opt : ${provinsiOptions}" th:value="${opt.pkLookupAddress}" th:text="${opt.name}" th:selected="${opt.pkLookupAddress == address.provinsi.pkLookupAddress}"/>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="input07" class="col-sm-3 control-label">Kabupaten / Kota</label>
+									<div class="col-sm-9 form-input-container">
+										<select class="chosen-select chosen-transparent form-control detail-kab-kota" th:value="${address.kabupatenKota.pkLookupAddress}">
+											<option th:each="opt : ${kabKotaOptions}" th:value="${opt.pkLookupAddress}" th:text="${opt.name}" th:selected="${opt.pkLookupAddress == address.kabupatenKota.pkLookupAddress}"/>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="input07" class="col-sm-3 control-label">Kecamatan</label>
+									<div class="col-sm-9 form-input-container">
+										<select class="chosen-select chosen-transparent form-control detail-kecamatan" th:value="${address.kecamatan.pkLookupAddress}">
+											<option th:each="opt : ${kecamatanOptions}" th:value="${opt.pkLookupAddress}" th:text="${opt.name}" th:selected="${opt.pkLookupAddress == address.kecamatan.pkLookupAddress}"/>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="input07" class="col-sm-3 control-label">Kelurahan</label>
+									<div class="col-sm-9 form-input-container">
+										<select class="chosen-select chosen-transparent form-control detail-kelurahan" th:value="${address.kelurahan.pkLookupAddress}">
+											<option th:each="opt : ${kelurahanOptions}" th:value="${opt.pkLookupAddress}" th:text="${opt.name}" th:selected="${opt.pkLookupAddress == address.kelurahan.pkLookupAddress}"/>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label" th:text="'Alamat'">Alamat</label>
+									<div class="col-sm-9 form-input-container">
+										<input type="text" class="form-control detail-alamat" placeholder="Alamat" th:value="${address.alamat}"/>
+									</div>
+								</div>
+								<div class="form-group">				
+									<label class="col-sm-3 control-label" th:text="'Kode Pos'">Kode Pos</label>
+									<div class="col-sm-9 form-input-container">
+										<input type="hidden" class="detail-address-maintenance-pk" th:value="${address.pkPartyAddress}"/>
+										<input type="text" class="form-control detail-postal-code" placeholder="Kode Pos" id="input-text-name" th:value="${address.kodepos}"/>
+									</div>
+								</div>
+							</div>
+							</th:block>
+							<th:block th:if="*{#lists.isEmpty(partyAddresses)}">
+							<div class="address-section">
+								<div class="form-group">
+									<label for="input07" class="col-sm-3 control-label">Provinsi</label>
+									<div class="col-sm-9 form-input-container">
+										<select class="chosen-select chosen-transparent form-control detail-province">
+											<option value="" th:text="${'[ Pilih Provinsi ]'}"/>
+											<option th:each="opt : ${provinsiOptions}" th:value="${opt.pkLookupAddress}" th:text="${opt.name}"/>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="input07" class="col-sm-3 control-label">Kabupaten / Kota</label>
+									<div class="col-sm-9 form-input-container">
+										<select class="chosen-select chosen-transparent form-control detail-kab-kota">
+											<option value="" th:text="${'[ Pilih Kabupaten / Kota ]'}"/>
+											<option th:each="opt : ${kabKotaOptions}" th:value="${opt.pkLookupAddress}" th:text="${opt.name}"/>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="input07" class="col-sm-3 control-label">Kecamatan</label>
+									<div class="col-sm-9 form-input-container">
+										<select class="chosen-select chosen-transparent form-control detail-kecamatan">
+											<option value="" th:text="${'[ Pilih Kecamatan ]'}"/>
+											<option th:each="opt : ${kecamatanOptions}" th:value="${opt.pkLookupAddress}" th:text="${opt.name}"/>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="input07" class="col-sm-3 control-label">Kelurahan</label>
+									<div class="col-sm-9 form-input-container">
+										<select class="chosen-select chosen-transparent form-control detail-kelurahan">
+											<option value="" th:text="${'[ Pilih Kelurahan ]'}"/>										
+											<option th:each="opt : ${kelurahanOptions}" th:value="${opt.pkLookupAddress}" th:text="${opt.name}"/>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label" th:text="'Alamat'">Alamat</label>
+									<div class="col-sm-9 form-input-container">
+										<input type="text" class="form-control detail-alamat" placeholder="Alamat"/>
+									</div>
+								</div>
+								<div class="form-group">				
+									<label class="col-sm-3 control-label" th:text="'Kode Pos'">Kode Pos</label>
+									<div class="col-sm-9 form-input-container">
+										<input type="text" class="form-control detail-postal-code" placeholder="Kode Pos" id="input-text-name"/>
+									</div>
+								</div>
+							</div>
+							</th:block>
+							
+							<!-- POPULATE PARTY CONTACT IF EDIT MODE -->
+							<div class="form-group">
+	                        	<label class="col-sm-3 control-label" for="input01"></label>
+	                        	<div class="col-sm-9">
+									<div class="input-group input-group-sm" style="width:100%;">
+									<!-- tile -->
+	                					<section class="tile color transparent-white">
+	                  					<!-- tile body -->
+	                  						<div class="tile-body transparent rounded-corners">
+	                    						<h5><strong>Nomor</strong> Telepon <a href="#" class="btn btn-primary btn-xs btn-add-contact" data-toggle="tooltip" title="" data-original-title="Tambah" style="margin-left:10px;"><i class="fa fa-plus dropdown-plus"></i></a></h5>
+	                   							<table class="table table-custom table-sortable company-third-party-table-contact" style="width:100%;">
+					 								<thead>
+								                        <tr>
+								                          <th>Tipe Kontak</th>
+								                          <th>Nomor</th>
+								                          <th></th>
+								                        </tr>
+								                    </thead>
+	                     							<tbody>
+								                        <tr th:if="*{#lists.isEmpty(partyContacts)}">
+								                        	<td><div class="input-group input-group-sm" style="width:100%;">							  
+																	<select class="chosen-select chosen-transparent form-control company-third-party-table-contact-contactType">
+																		<option th:each="opt : ${optionsContactType}" th:value="${opt.pkLookup}" th:text="${opt.nameId}"></option>
+																	</select></div></td>
+															<td><div class="input-group input-group-sm" style="width:100%;"><input type="text" class="form-control company-third-party-table-contact-contact"/></div></td>
+								                          	<td class="text-center"><a href="#" class="btn btn-primary btn-xs margin-bottom-20 company-third-party-table-contact-delete-row" data-toggle="tooltip" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></td>
+								                        </tr>
+								                        <tr th:if="*{not #lists.isEmpty(partyContacts)}" th:each="item : *{partyContacts}">
+								                        	<td><div class="input-group input-group-sm" style="width:100%;">							  
+																	<input type='hidden' class='company-third-party-table-contact-pkPartyContact' th:value="${item.pkPartyContact}"/>
+																	<select class="chosen-select chosen-transparent form-control company-third-party-table-contact-contactType">
+																		<option th:each="opt : ${optionsContactType}" th:value="${opt.pkLookup}" th:text="${opt.nameId}" th:selected="${opt.pkLookup == item.contactType.pkLookup}"></option>
+																	</select></div></td>
+															<td><div class="input-group input-group-sm" style="width:100%;"><input type="text" class="form-control company-third-party-table-contact-contact" th:value="${item.contact}"/></div></td>
+								                          	<td class="text-center"><a href="#" class="btn btn-primary btn-xs margin-bottom-20 company-third-party-table-contact-delete-row" data-toggle="tooltip" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></td>
+								                        </tr>
+								                    </tbody>
+	                   							</table>
+					                 		</div>
+						                  <!-- /tile body -->
+						                  <!-- tile footer -->
+						                   <div class="tile-footer bg-transparent-white-2 rounded-bottom-corners">
+						                    	<div class="row">  
+						                      		<div class="col-sm-3">
+						                      	</div>
+						                    </div>
+							             </div>
+					                  <!-- /tile footer -->
+					                </section>
+					                <!-- /tile --> 
+									</div>
+	                       		</div>
+	                      	</div>
+	                      	
+							<div class="form-group form-footer">
+								<div class="col-sm-offset-3 col-sm-9">
+									<a href="#" id="transporter-detail-btn-cancel" class="btn btn-default" type="reset" data-toggle="tooltip" title="" data-original-title="Kembali ke list setting produk">Batal</a>
+									<button id="transporter-detail-btn-save" class="btn btn-primary" type="submit" data-toggle="tooltip" title="" data-original-title="Menyimpan data">Simpan</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+	</section>
+	</div>
+	<div id="contactHiddenRow" style="display:none;">
+		<table>
+		 <tr>
+             <td><div class="input-group input-group-sm" style="width:100%;">							  
+				<select class="chosen-select chosen-transparent form-control company-third-party-table-contact-contactType">
+					<option th:each="opt : ${optionsContactType}" th:value="${opt.pkLookup}" th:text="${opt.nameId}"></option>
+				</select></div></td>
+			 <td><div class="input-group input-group-sm" style="width:100%;"><input type="text" class="form-control company-third-party-table-contact-contact"/></div></td>
+			 <td class="text-center"><a href="#" class="btn btn-primary btn-xs margin-bottom-20 company-third-party-table-contact-delete-row" data-toggle="tooltip" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></td>
+		 </tr>
+		</table>
+	</div>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	    $(function(){
+	    	showScrollForm('content-form',-130);
+	    	var backToList = function(){
+				returnToList('transporter-detail-container', 'transporter-list-container', true);
+			};
+			
+			var preSerialize = function() {
+				var i = 0;
+				$('.address-section').each(function(){
+					if($(this).find('.detail-address-maintenance-pk').length>0){
+						$(this).find('.detail-address-maintenance-pk').attr('name', 'partyAddresses['+i+'].pkPartyAddress');
+					}
+					$(this).find('.detail-postal-code').attr('name', 'partyAddresses['+i+'].kodepos');
+					$(this).find('.detail-province').attr('name', 'partyAddresses['+i+'].provinsi.pkLookupAddress');
+					$(this).find('.detail-kab-kota').attr('name', 'partyAddresses['+i+'].kabupatenKota.pkLookupAddress');
+					$(this).find('.detail-kecamatan').attr('name', 'partyAddresses['+i+'].kecamatan.pkLookupAddress');
+					$(this).find('.detail-kelurahan').attr('name', 'partyAddresses['+i+'].kelurahan.pkLookupAddress');			
+					$(this).find('.detail-alamat').attr('name', 'partyAddresses['+i+'].alamat');
+					i++;
+				});
+			}
+			
+			var preSerializeContact = function() {
+				var i = 0;
+				$('.company-third-party-table-contact').find('tbody tr').each(function(){
+					$(this).find('.company-third-party-table-contact-pkPartyContact').attr('name', 'partyContacts['+i+'].pkCompanyContact');
+					$(this).find('.company-third-party-table-contact-contactType').attr('name', 'partyContacts['+i+'].contactType.pkLookup');
+					$(this).find('.company-third-party-table-contact-contact').attr('name', 'partyContacts['+i+'].contact');
+					i++;
+				});
+			}
+	    	
+			var submitForm = function(){
+				cleanErrorParsley();
+				preSerialize();
+				preSerializeContact();
+				var sURL = /*[[@{/do/settings/transporter/saveTransporter/}]]*/ #;
+				$.post(sURL, $("#transporter-detail-form").serialize(), function(data) {
+					if(data.errorList!=null){
+						displayErrorParsley(data.errorList);
+					}else{
+						backToList();
+					}
+				});
+			};
+			
+			var populateOptions = function (groupSource, obj, classSelectDest, firstOption, withKodepos) {
+				if(obj.val()!=""){
+					var sURL = /*[[@{/do/settings/company/findAddressByParent/}]]*/ #;
+					$.get(sURL, {addressGroupSource:groupSource, fkLookupAddressParent: obj.val()}, function(data) {
+						if(data.errorList!=null){
+							displayErrorParsley(data.errorList);
+						}else{
+							var option = '<option value="">'+firstOption+'</option>';
+							if(data.length>0){	
+								if(withKodepos){
+									for(var i=0;i<data.length;i++){
+										option += "<option value='" + data[i].pkLookupAddress + "' kodepos='"+data[i].kodepos+"'>"+data[i].name+"</option>";
+									}	
+								}else{
+									for(var i=0;i<data.length;i++){
+										option += "<option value='" + data[i].pkLookupAddress + "'>"+data[i].name+"</option>";
+									}
+								}
+							}
+							$('.address-section .'+classSelectDest).html(option);
+						}
+					});
+				};
+			}
+			
+			var populateKodepos = function(classDest){
+				var sURL = /*[[@{/do/settings/company/getKodepos/}]]*/ #;
+				$.get(sURL, {kelurahan: $('.detail-kelurahan').val()}, function(data) {
+					if(data.errorList!=null){
+						displayErrorParsley(data.errorList);
+					}else{
+						$('.'+classDest).val(data);
+					}
+				});
+			};
+			
+			var addRowContact = function (obj) {
+				var html = "<tr>" + $('#contactHiddenRow').find('tr').html() + "</tr>";
+				$('.company-third-party-table-contact').find('tbody').append(html);
+				$('.company-third-party-table-contact-delete-row').click(function(e){
+					e.preventDefault();
+					deleteThisRow(e.target);
+				});
+			}
+			
+			var deleteThisRow = function (obj) {
+				$(obj).closest('tr').remove();
+			}
+			
+			$('.detail-province').change(function(){
+				$('.detail-kab-kota').html('<option value="">[ Pilih Kabupaten / Kota ]</option>');
+				$('.detail-kecamatan').html('<option value="">[ Pilih Kecamatan ]</option>');
+				$('.detail-kelurahan').html('<option value="">[ Pilih Kelurahan ]</option>');
+				$('.detail-postal-code').val('');
+				var groupSource = /*[[${T(id.base.app.ILookupAddressGroupConstant).PROVINSI}]]*/ #;
+				var firstOption = '[ Pilih Provinsi ]';
+				populateOptions(groupSource, $(this), 'detail-kab-kota', firstOption, false);
+				
+			});
+			
+			$('.detail-kab-kota').change(function(){
+				$('.detail-kecamatan').html('<option value="">[ Pilih Kecamatan ]</option>');
+				$('.detail-kelurahan').html('<option value="">[ Pilih Kelurahan ]</option>');
+				$('.detail-postal-code').val('');
+				var groupSource = /*[[${T(id.base.app.ILookupAddressGroupConstant).KAB_KOTA}]]*/ #;
+				var firstOption = '[ Pilih Kabupaten / Kota ]';
+				populateOptions(groupSource, $(this), 'detail-kecamatan', firstOption, false);
+			});
+			
+			$('.detail-kecamatan').change(function(){
+				$('.detail-kelurahan').html('<option value="">[ Pilih Kelurahan ]</option>');
+				$('.detail-postal-code').val('');
+				var groupSource = /*[[${T(id.base.app.ILookupAddressGroupConstant).KECAMATAN}]]*/ #;
+				var firstOption = '[ Pilih Kecamatan ]';
+				populateOptions(groupSource, $(this), 'detail-kelurahan', firstOption, true);
+			});
+			
+			$('.detail-kelurahan').change(function(){
+				$('.detail-postal-code').val('');
+				populateKodepos('detail-postal-code');
+			});
+			
+			$('#transporter-detail-btn-save').click(function(e){
+				e.preventDefault();
+				submitForm();
+			});
+			
+			$('#transporter-detail-btn-cancel').click(function(e){
+				e.preventDefault();
+				backToList();
+			});
+			
+			$('.btn-add-contact').click(function(e) {
+				e.preventDefault();
+				addRowContact();
+			});
+			
+			$('.company-third-party-table-contact-delete-row').click(function(e){
+				e.preventDefault();
+				deleteThisRow(e.target);
+			});
+	    });
+	/*]]>*/
+	</script>
+</body>
+</html>
